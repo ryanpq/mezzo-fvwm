@@ -1,0 +1,11 @@
+Package: mezzo-fvwm
+Version: 4.2
+Architecture: all
+Maintainer: SymphonyOS Project <project@symphonyos.com>
+Installed-Size: 1
+Depends: fvwm 
+Section: desktop
+Priority: optional
+Homepage: http://www.symphonyos.com
+Description: Mezzo Desktop fvwm configuration file
+

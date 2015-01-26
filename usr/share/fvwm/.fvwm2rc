@@ -1,0 +1,166 @@
+#Symphony OS FVWM Config
+#Add Window Decor
+DestroyDecor Mezzo
+AddtoDecor Mezzo
+
++ TitleStyle Active        AdjustedPixmap /usr/local/symphony/decor/header.png -- Flat
++ TitleStyle Inactive      AdjustedPixmap /usr/local/symphony/decor/header.png -- Flat
++ TitleStyle UnderText     AdjustedPixmap /usr/local/symphony/decor/blank.png -- Flat
++ TitleStyle LeftEnd	   AdjustedPixmap /usr/local/symphony/decor/left-edge.png -- Flat
++ TitleStyle RightEnd	   AdjustedPixmap /usr/local/symphony/decor/right-edge.png -- Flat
+
++ ButtonStyle 8 ActiveUp   AdjustedPixmap /usr/local/symphony/decor/close.png -- UseTitleStyle Flat
++ ButtonStyle 8 ActiveDown AdjustedPixmap /usr/local/symphony/decor/close.png -- UseTitleStyle Flat
++ ButtonStyle 8 AllInactive   AdjustedPixmap /usr/local/symphony/decor/close.png -- UseTitleStyle Flat
+
++ ButtonStyle 9 AllActiveUp   AdjustedPixmap /usr/local/symphony/decor/maximize.png -- UseTitleStyle Flat
++ ButtonStyle 9 AllActiveDown AdjustedPixmap /usr/local/symphony/decor/maximize.png -- UseTitleStyle Flat
++ ButtonStyle 9 AllInactive   AdjustedPixmap /usr/local/symphony/decor/maximize.png -- UseTitleStyle Flat
+
++ ButtonStyle 7 AllActiveUp   AdjustedPixmap /usr/local/symphony/decor/minimize.png -- UseTitleStyle Flat
++ ButtonStyle 7 ActiveDown AdjustedPixmap /usr/local/symphony/decor/minimize.png -- UseTitleStyle Flat
++ ButtonStyle 7 AllInactive AdjustedPixmap /usr/local/symphony/decor/minimize.png -- UseTitleStyle Flat
+
++ ButtonStyle 1 AllActive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
++ ButtonStyle 1 AllInactive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
+
++ ButtonStyle 2 AllActive AdjustedPixmap /usr/local/symphony/decor/blank.png  -- UseTitleStyle Flat
++ ButtonStyle 2 AllInactive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
+
++ ButtonStyle 3 AllActive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
++ ButtonStyle 3 AllInactive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
+
++ ButtonStyle 4 AllActive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
++ ButtonStyle 4 AllInactive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
+
++ ButtonStyle 5 AllActive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
++ ButtonStyle 5 AllInactive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
+
++ ButtonStyle 6 AllActive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
++ ButtonStyle 6 AllInactive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
+
++ ButtonStyle 0 AllActive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
++ ButtonStyle 0 AllInactive AdjustedPixmap /usr/local/symphony/decor/blank.png -- UseTitleStyle Flat
+
+
+#+ TitleStyle LeftJustified Height 25
++ TitleStyle Centered Height 25
+
++ BorderStyle Inactive -- HiddenHandles NoInset
+
++ BorderStyle Active -- HiddenHandles NoInset
+
+Colorset 3 fg #000000, bg #000000
+
+BorderColorset 3
+
+Mouse 0 	9	A	Maximize
+Mouse 0	7	A	Iconify
+Mouse 0	8	A	Close
+Mouse 1	I	A	Iconify
+Mouse 2	I	A	Move
+
+
+# Set Decor as Mezzo Default
+Style "*" UseDecor Mezzo
+
+# Focus Model Selection
+Style "*" ClickToFocus, FPGrabFocus
+
+# titlebar style
+Style "*" BorderWidth 1,HandleWidth 1
+Style "*" ForeColor #333333
+Style "*" HilightFore #333333
+Style "*" BackColor #333333
+Style "*" Font "xft:Ubuntu:style=Roman:size:22"
+Style * NoIcon
+
+#Put window decors on subwindows so we can do as we please with them.
+Style "*" DecorateTransient
+
+#Use the working area for placement, not just maximizing.
+#Style "*" EWMHPlacementUseWorkingArea, EWMHUseStrutHints
+
+OpaqueMoveSize unlimited
+Style * ResizeOpaque
+
+#Define the function that starts Mezzo.  This function waits for Mezzo to start, and then maximizes it to ensure proper fit.  It also unlocks this particular reliance on a fixed resolution.
+DestroyFunc Mezzostart
+AddToFunc Mezzostart
++ I Exec exec perl /usr/local/symphony/tools/render.pl
++ I wait Mezzo
++ I All maximize true
+
+# Make sure fvwmcommand is available
+DestroyFunc StartFunction
+AddToFunc StartFunction "I" Module FvwmCommandS
+
+## start some applications maximized
+#DestroyModuleConfig FE-StartMaximized: *
+#*FE-StartMaximized: Cmd Function
+#*FE-StartMaximized: add_window FuncStartMaximized
+
+AddToFunc StartFunction
++ I Module FvwmEvent FE-StartMaximized
+
+DestroyFunc FuncStartMaximized
+AddToFunc   FuncStartMaximized
++ I ThisWindow (!Transient,!*AppTarget*,!*SysTarget*,!*FileTarget*,!*SocTarget*) Maximize
+
+
+
+#Run the Mezzo function to start mezzo after the WM initializes. 
+
+DestroyFunc InitFunction
+AddToFunc InitFunction
++ I Mezzostart
+
+
+#Prevent Dragging Windows off screen
+#EdgeResistance 10000 10000
+
+# No Virtual Desktops
+DesktopSize 1x1
+
+EWMHNumberOfDesktops 1 1
+
+#Stop FVWM from maximizing windows over the targets. 
+EWMHBaseStruts 0 0 0 25
+
+#Style "*" BorderWidth 0
+
+
+# Handle Mezzo Desktop Properly
+Style Mezzo NoTitle, StaysOnBottom, EWMHIgnoreStrutHints,  !Borders, !Handles, HintOverride, EWMHPlacementIgnoreWorkingArea, EWMHMaximizeIgnoreWorkingArea, Sticky, FixedSize, FixedPosition
+
+# Handle corner targets properly
+Style *AppTarget* NoTitle, HandleWidth 0, Layer 20, EWMHIgnoreStrutHints, Sticky, FixedSize, FixedPosition
+
+Style *SysTarget* NoTitle, HandleWidth 0, Layer 20, EWMHIgnoreStrutHints, Sticky, FixedSize, FixedPosition
+
+Style *FileTarget* NoTitle, HandleWidth 0, Layer 20, EWMHIgnoreStrutHints, Sticky, FixedSize, FixedPosition
+
+Style *SocTarget* NoTitle, HandleWidth 0, Layer 20, EWMHIgnoreStrutHints, Sticky, FixedSize, FixedPosition
+
+
+#Handle the tint2 panel
+Style *tint2* NoTitle, HandleWidth 0, StaysOnTop, EWMHIgnoreStrutHints, Sticky, FixedSize, FixedPosition 
+
+#Handle Mezzo Menus properly
+Style MezzoMenu NoTitle, Layer 19, EWMHIgnoreStrutHints,  !Borders, !Handles, HintOverride, EWMHPlacementIgnoreWorkingArea, EWMHMaximizeIgnoreWorkingArea, Sticky, FixedSize, FixedPosition
+
+Style mezzosplash NoTitle, Layer 50, EWMHIgnoreStrutHints,  !Borders, !Handles, HintOverride, EWMHPlacementIgnoreWorkingArea, EWMHMaximizeIgnoreWorkingArea, Sticky, FixedSize, FixedPosition
+
+Style FvwmExposeMenu Layer 20
+
+
+DestroyFunc WindowListFunc
+AddToFunc WindowListFunc
++ I Iconify off
++ I FlipFocus
++ I Raise
+
+Key Tab A M WindowList Root c c CurrentDesk, NoGeometry, CurrentAtEnd, IconifiedAtEnd
+HideGeometryWindow Always
+OpaqueMoveSize unlimited
+
